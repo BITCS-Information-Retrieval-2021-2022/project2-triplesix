@@ -36,7 +36,10 @@ def get_all_authorId(aid):
     #     print("作者ID"+str(first_layer_authors_id[i])+"相关作者ID收集完毕！")
     # # 将两层挖掘的ID存到一起
     all_layer_authors_id = first_layer_authors_id # + second_layer_authors_id
-    return all_layer_authors_id
+    # 使用set方法对列表中的authorid进行去重
+    result = set(all_layer_authors_id)
+    id_list = list(result)
+    return id_list
 
 # 设置一个起始大牛作者
 authors = get_all_authorId("48727916")
