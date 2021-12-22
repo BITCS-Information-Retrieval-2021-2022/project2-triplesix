@@ -2,11 +2,15 @@ import requests
 import json
 import pymongo
 import time
+from redis import Redis
 
 # 设置MongoDB账户和数据集
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["Sem_sch_authors"]
-mycoll = mydb["Authors_data"]
+mycoll = mydb["Authors_data_48727916"]
+
+# 创建Redis连接对象
+connect = Redis(host='localhost',port=6379,db=1)
 
 # 设置User-Agent防反爬
 headers ={
@@ -21,21 +25,27 @@ def get_all_authorId(aid):
     first_layer_authors_id = []
     for item1 in content['papers']:
         for item2 in item1['authors']:
-            first_layer_authors_id.append(item2['authorId'])
+            new_url = "https://api.semanticscholar.org/graph/v1/author/" + str(item2['authorId']) + "?fields=url,papers.abstract,papers.authors"  # 组建url
+            new_add_redis = connect.sadd('urls', new_url)
+            if new_add_redis == 1:
+                first_layer_authors_id.append(item2['authorId'])
     print("作者ID" + str(aid) + "相关作者ID收集完毕！")
     # 爬取第二层人物关系
-    # second_layer_authors_id = []
-    # for i in range(0,len(first_layer_authors_id)):
-    #     url1 = "https://api.semanticscholar.org/graph/v1/author/" + str(first_layer_authors_id[i]) + "?fields=url,papers.abstract,papers.authors"
-    #     response1 = requests.get(url=url1, headers=headers)
-    #     content1 = response1.text
-    #     content1 = json.loads(content1)
-    #     for item1 in content1['papers']:
-    #         for item2 in item1['authors']:
-    #             second_layer_authors_id.append(item2['authorId'])
-    #     print("作者ID"+str(first_layer_authors_id[i])+"相关作者ID收集完毕！")
-    # # 将两层挖掘的ID存到一起
-    all_layer_authors_id = first_layer_authors_id # + second_layer_authors_id
+    second_layer_authors_id = []
+    for i in range(0,len(first_layer_authors_id)):
+        url1 = "https://api.semanticscholar.org/graph/v1/author/" + str(first_layer_authors_id[i]) + "?fields=url,papers.abstract,papers.authors"
+        response1 = requests.get(url=url1, headers=headers)
+        content1 = response1.text
+        content1 = json.loads(content1)
+        for item1 in content1['papers']:
+            for item2 in item1['authors']:
+                new_url = "https://api.semanticscholar.org/graph/v1/author/" + str(item2['authorId']) + "?fields=url,papers.abstract,papers.authors"  # 组建url
+                new_add_redis = connect.sadd('urls', new_url)
+                if new_add_redis == 1:
+                    second_layer_authors_id.append(item2['authorId'])
+        print("作者ID"+str(first_layer_authors_id[i])+"相关作者ID收集完毕！")
+    # 将两层挖掘的ID存到一起
+    all_layer_authors_id = first_layer_authors_id + second_layer_authors_id
     # 使用set方法对列表中的authorid进行去重
     result = set(all_layer_authors_id)
     id_list = list(result)
@@ -52,7 +62,7 @@ for i in range(0, len_author-1):
     dict = {}
     url = "https://api.semanticscholar.org/graph/v1/author/" + str(authors[i]) + "?fields=url,externalIds,name,aliases,affiliations,homepage,papers.abstract,papers.authors"
     response = requests.get(url=url, headers=headers)
-    time.sleep(5)
+    # time.sleep(10)
     content = response.text
     content = json.loads(content)
     dict = content
