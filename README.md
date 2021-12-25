@@ -105,9 +105,23 @@ body = {
         }
 result = self.es.search(index = self.index, body = body, size = size)
 ```
-##### 3) 计算作者关系，绘图，将二进制转为字符串，构造 response json
+### 2.3 计算作者关系，绘图，将二进制转为字符串，构造 response json
+#### 1) 根据爬取的数据，计算作者论文所有共同作者中出现频率最高的前50个共同作者
+    def _process_k(self, data, k=50):
+        result = {}
+        for paper in data['paper_list']:
+            for name in paper[1]:
+                result[name] = result.get(name, 0) + 1
+        result = sorted(result.items(), key=lambda x: x[1], reverse=True)
+        result = result[:k]
+        data['author_relation'] = result
+        self.creat_relationship(data)
+        return result
+#### 2) 根据前50个共同作者绘制作者关系图
+![img](https://user-images.githubusercontent.com/85541451/147380893-ddb4f46f-e095-456e-b9ee-02ed63f9ae10.jpg)
 
-### 2.3 Server
+
+### 2.4 Server
 ##### 1）采用 Flask 框架
 ##### 2）日志模块
 ##### 3）可选检索模式（匹配检索/ElasticSearch）
