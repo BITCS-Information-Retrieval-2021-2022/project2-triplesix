@@ -1,0 +1,21 @@
+12/25/2021 15:05:22 - INFO - Initialize the matchMode search engine
+12/25/2021 15:05:25 - INFO - Initialize the elasticMode search engine
+/opt/anaconda3/lib/python3.9/site-packages/elasticsearch/connection/base.py:200: ElasticsearchWarning: Elasticsearch built-in security features are not enabled. Without authentication, your cluster could be accessible to anyone. See https://www.elastic.co/guide/en/elasticsearch/reference/7.16/security-minimal-setup.html to enable security.
+  warnings.warn(message, category=ElasticsearchWarning)
+12/25/2021 15:05:25 - INFO - GET http://localhost:9200/ [status:200 request:0.011s]
+12/25/2021 15:05:25 - INFO - HEAD http://localhost:9200/scholar [status:200 request:0.002s]
+12/25/2021 15:05:25 - INFO - Start the server
+ * Serving Flask app "server" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+12/25/2021 15:05:25 - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+12/25/2021 15:05:25 - INFO -  * Running on http://192.168.1.102:5002/ (Press CTRL+C to quit)
+12/25/2021 15:05:35 - INFO - Keyword: 北京理工大学, Mode: 1
+12/25/2021 15:05:36 - INFO - Time-consuming for this search: 0.4781s
+12/25/2021 15:05:36 - INFO - 192.168.1.103 - - [25/Dec/2021 15:05:36] "POST /search HTTP/1.1" 200 -
+12/25/2021 15:05:36 - INFO - Name: 沈建冰, Domain: 北京理工大学计算机学院, Mode: 1
+12/25/2021 15:05:36 - INFO - Time-consuming for this search: 0.1615s
+12/25/2021 15:05:36 - INFO - 192.168.1.103 - - [25/Dec/2021 15:05:36] "POST /author HTTP/1.1" 200 -
