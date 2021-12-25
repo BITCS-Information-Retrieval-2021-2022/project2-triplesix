@@ -56,5 +56,62 @@ print("作者ID" + str(authors[i]) + "信息已更新！")
 
 ## 2.检索模块
 
+### 2.1 MatchSearch
+
+### 2.2 ElasticSearch
+
+#### 2.2.1 ElasticSearch简介
+
+Elasticsearch 是一个实时的分布式存储、搜索、分析的引擎。
+##### 1）内置分词器，存储与检索阶段均支持分词处理
+##### 2）采用倒排索引，支持模糊搜索
+##### 3）采用 TF-IDF 计算文档相似性，并按评分排序将检索结果返回
+
+#### 2.2.2 实现
+##### 1）将数据清洗后批量插入到elasticsearch中
+```
+def bulk_insert(self):
+   data = clean_data()
+   body = [{"_index": self.index, "_type": "_doc", "_source": value} for value in data]
+   helpers.bulk(self.es, body)
+```
+##### 2）实现 ElasticSearchEngine类，支持多字段（姓名、机构、领域、论文名称等）的模糊匹配，并对结果去重处理
+```
+from elasticsearch import Elasticsearch, helpers
+
+class ElasticSearchEngine:
+
+    def __init__(self, ip = 'localhost', port = 9200, timeout = 3600, index = 'scholar'):
+        self.es = Elasticsearch(host = ip, port = port, timeout = timeout)
+        self.index = index
+
+        if not self.es.indices.exists(self.index):
+            self.es.indices.create(self.index)
+            msg = "The current index does not exist, a new index has been created: {}".format(self.index)
+            log.INFO(msg)
+...
+body = {
+            'query':{
+                'bool':{
+                    'should': [{"match_phrase":{"name":keyword}},
+                             {"match":{"domain":keyword}},
+                             {"match":{"department":keyword}},
+                             {"match":{"paper_list":keyword}}]
+                }
+            },
+            "collapse":{
+                "field": "name.keyword"
+            }
+        }
+result = self.es.search(index = self.index, body = body, size = size)
+```
+##### 3) 计算作者关系，绘图，将二进制转为字符串，构造 response json
+
+### 2.3 Server
+##### 1）采用 Flask 框架
+##### 2）日志模块
+##### 3）可选检索模式（匹配检索/ElasticSearch）
+##### 4）处理请求 + 返回结果
+
 
 ## 3.展示模块
