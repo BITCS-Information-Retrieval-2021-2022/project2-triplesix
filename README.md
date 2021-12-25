@@ -57,6 +57,24 @@ print("作者ID" + str(authors[i]) + "信息已更新！")
 ## 2.检索模块
 
 ### 2.1 MatchSearch
+#### 1）将数据清洗格式化处理存入MongoDB数据库中
+    db = MongoDB('mydb')
+    mongo_pipline = MongoPipline(db)
+    mongo_pipline.clear_mongo_data()
+    # 数据预处理，包括数据清洗去重及格式化
+    data_pre_process = DataPreProcess()
+    web1_data = data_pre_process.run(r'./data/scholar.json')
+    web2_data = data_pre_process.run(r'./data/Authors_data_Big.json')
+    # 计算前50个共同作者
+    data_process1 = DataProcess(web1_data)
+    web1_data = data_process1.author_relation_compute('relation_authors')
+    data_process2 = DataProcess(web2_data)
+    web2_data = data_process2.author_relation_compute('relation_authors')
+    # 存入MongoDB中
+    mongo_pipline.writer_data_to_mongo(web1_data, 'web1_data', do_filter=True)
+    mongo_pipline.writer_data_to_mongo(web2_data, 'web2_data', do_filter=True)
+#### 2）实现SearchEngine类用于匹配检索，从MongoDB中读取数据实现综合检索，输入作者姓名、作者机构、领域、论文名称，都能得到相应的检索结果，并对结果去重
+
 
 ### 2.2 ElasticSearch
 
