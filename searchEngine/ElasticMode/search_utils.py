@@ -52,9 +52,9 @@ class ElasticSearchEngine:
             'query':{
                 'bool':{
                     'should': [{"match_phrase":{"name":keyword}},
-                             {"match":{"domain":keyword}},
-                             {"match":{"department":keyword}},
-                             {"match":{"paper_list":keyword}}]
+                             {"match_phrase":{"domain":keyword}},
+                             {"match_phrase":{"department":keyword}},
+                             {"match_phrase":{"paper_list":keyword}}]
                 }
             },
             "collapse":{
