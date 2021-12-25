@@ -118,8 +118,13 @@ result = self.es.search(index = self.index, body = body, size = size)
         self.creat_relationship(data)
         return result
 #### 2) 根据前50个共同作者绘制作者关系图
-![img](https://user-images.githubusercontent.com/85541451/147380893-ddb4f46f-e095-456e-b9ee-02ed63f9ae10.jpg)
+![image](https://user-images.githubusercontent.com/85541451/147380913-cc91d805-81e5-4c80-bebf-314e8d4dc408.png)
 
+#### 3) 图片二进制转字符串
+    def _imageToStr(self, image):
+        image_byte = base64.b64encode(image)
+        image_str = image_byte.decode('ascii')  # byte类型转换为str
+        return image_str
 
 ### 2.4 Server
 ##### 1）采用 Flask 框架
