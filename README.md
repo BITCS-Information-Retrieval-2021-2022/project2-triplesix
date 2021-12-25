@@ -152,3 +152,14 @@ result = self.es.search(index = self.index, body = body, size = size)
 
 
 ## 3.展示模块
+### 3.1 运行环境：
+##### Windows 10 专业版
+##### PyCharm Community Edition 2020.2.3 x64
+##### Python 3.7.9
+##### Flask 2.0.2
+##### requests 2.26.0
+
+### 3.2 运行：
+##### 执行run.py
+##### 浏览器输入 http://127.0.0.1:5000/search 进入搜索页面，输入关键词进行查询
+##### 列表页面点击作者姓名可直接查看其详细信息
